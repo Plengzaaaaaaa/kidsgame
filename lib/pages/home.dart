@@ -4,7 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
@@ -23,67 +23,47 @@ class _HomeState extends State<Home> {
   };
   int index = 0;
   final play = AudioPlayer();
-
   @override
   Widget build(BuildContext context) {
-    int totalScore = score.values.where((element) => element).length;
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Matching Game'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                Icon(Icons.star, color: Colors.yellow),
-                SizedBox(width: 5),
-                Text(
-                  '$totalScore',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ],
+        appBar: AppBar(
+          title: Text(''),
+        ),
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: choices.keys.map((element) {
+                return Expanded(
+                  child: Draggable<String>(
+                    data: element,
+                    child: Movable(element),
+                    feedback: Movable(element),
+                    childWhenDragging: Movable('🐰'),
+                  ),
+                );
+              }).toList(),
             ),
-          ),
-        ],
-      ),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: choices.keys.map((element) {
-              return Expanded(
-                child: Draggable<String>(
-                  data: element,
-                  child: Movable(element),
-                  feedback: Movable(element),
-                  childWhenDragging: Movable('🐰'),
-                ),
-              );
-            }).toList(),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: choices.keys.map((element) {
-              return buildTarget(element);
-            }).toList()
-              ..shuffle(Random(index)),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh),
-        onPressed: () {
-          setState(() {
-            score.clear();
-            index++;
-          });
-        },
-      ),
-    );
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: choices.keys.map((element) {
+                return buildTarget(element);
+              }).toList()
+                ..shuffle(Random(index)),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.refresh),
+            onPressed: () {
+              setState(() {
+                score.clear();
+                index++;
+              });
+            }));
   }
 
   Widget buildTarget(emoji) {
@@ -136,10 +116,4 @@ class Movable extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: Home(),
-  ));
 }
